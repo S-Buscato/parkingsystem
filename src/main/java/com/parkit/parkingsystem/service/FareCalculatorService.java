@@ -1,7 +1,5 @@
 package com.parkit.parkingsystem.service;
 
-import java.sql.Date;
-
 import com.parkit.parkingsystem.constants.Fare;
 import com.parkit.parkingsystem.model.Ticket;
 
@@ -16,18 +14,20 @@ public class FareCalculatorService {
 		Long outHour = ticket.getOutTime().getTime();
 
 		// TODO: Some tests are failing here. Need to check if this logic is correct
-		long duration = (outHour - inHour)/1000 / 60 / 60;
-		System.out.println("duration : " +  duration);
-		double price = 0;
-		int free30Min = 30;
+		double duration = (outHour - inHour)/1000 / 60 ; // out - in en minutes;
+		System.out.println("duration : " +  duration +" minutes" + " - soit en h : " + duration/60);
+	
+		double price = 0.0;
+		double free30Min = 30;
 		switch (ticket.getParkingSpot().getParkingType()) {
 		case CAR: {
-			price = duration > free30Min ? duration * Fare.CAR_RATE_PER_HOUR / 60: 0;
+			price = duration > free30Min ? duration * Fare.CAR_RATE_PER_HOUR / 60 : 0 ;
 			if (ticket.isRegularCustomer()) {
-				price = price * Fare.DISCOUNT_FOR_REGULAR_CUSTOMER;
+				price = (price * Fare.DISCOUNT_FOR_REGULAR_CUSTOMER);
 				System.out.println("DISCOUNT !!!!!!!!!!" + (1 - Fare.DISCOUNT_FOR_REGULAR_CUSTOMER)* 100 + "%");
 			}
-			ticket.setPrice(price);
+			price = Math.round(price*100.0) /100.0;
+			ticket.setPrice(price);		
 			break;
 		}
 		case BIKE: {
@@ -36,6 +36,7 @@ public class FareCalculatorService {
 				price = price * Fare.DISCOUNT_FOR_REGULAR_CUSTOMER;
 				System.out.println("DISCOUNT !!!!!!!!!!" + (1 - Fare.DISCOUNT_FOR_REGULAR_CUSTOMER)* 100 + "%");
 			}
+			price = Math.round(price*100.0) /100.0;
 			ticket.setPrice(price);
 			break;
 		}
