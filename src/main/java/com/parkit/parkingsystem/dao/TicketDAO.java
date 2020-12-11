@@ -13,6 +13,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 
 public class TicketDAO {
 
@@ -31,7 +32,9 @@ public class TicketDAO {
             ps.setString(2, ticket.getVehicleRegNumber());
             ps.setDouble(3, ticket.getPrice());
             ps.setTimestamp(4, new Timestamp(ticket.getInTime().getTime()));
-            ps.setTimestamp(5, (ticket.getOutTime() == null)?null: (new Timestamp(ticket.getOutTime().getTime())) );
+            ps.setTimestamp(5, null );
+
+           // ps.setTimestamp(5, (ticket.getOutTime() == null)? null: (new Timestamp(ticket.getOutTime().getTime())) );
             ps.setBoolean(6, ticket.isRegularCustomer());
             return ps.execute();
         }catch (Exception ex){
@@ -61,7 +64,7 @@ public class TicketDAO {
                 ticket.setInTime(rs.getTimestamp(4));
                 ticket.setOutTime(rs.getTimestamp(5));
                 ticket.setRegularCustomer(rs.getBoolean(7));
-            }
+            } 
             dataBaseConfig.closeResultSet(rs);
             dataBaseConfig.closePreparedStatement(ps);
         }catch (Exception ex){
@@ -90,12 +93,12 @@ public class TicketDAO {
         return false;
     }
 
-	public boolean isRegularCustomer(String  regularCustomer) {
+	public boolean isRegularCustomer(String  vehicleRegNumber) {
 		 Connection con = null;
 	        try {
 	            con = dataBaseConfig.getConnection();
 	            PreparedStatement ps = con.prepareStatement(DBConstants.IS_REGULAR_CUSTOMER);
-	            ps.setString(1, regularCustomer);
+	            ps.setString(1, vehicleRegNumber);
 	            ResultSet rs = ps.executeQuery();
 	            if(rs.next()){
 	            	if(rs.getInt(1) >= Fare.REGULAR_CUSTOMER_LIMIT) {
