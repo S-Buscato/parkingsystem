@@ -20,10 +20,10 @@ public class FareCalculatorService {
 	 * @param String vehicle, double duration, boolean isRegularCustomer
 	 */
 	public double calculForVehiculeType(String vehicleType, double duration, boolean isRegularCustomer) {
-		double price = 0.0;
-		double rate = 0.0;
-		rate = vehicleType == "car" ? Fare.CAR_RATE_PER_HOUR : Fare.BIKE_RATE_PER_HOUR;
-		price = duration > Fare.FREE_TIME_30MIN ? duration * rate / 60 : 0; 
+		double price = 0.00;
+		double rate = 0.00;
+		rate = vehicleType.equals("car") ? Fare.CAR_RATE_PER_HOUR : Fare.BIKE_RATE_PER_HOUR;
+		price = duration > Fare.FREE_TIME_30MIN ? duration * rate / 60 : 0.00; 
 		if (isRegularCustomer) {
 			price = (price * Fare.DISCOUNT_FOR_REGULAR_CUSTOMER);
 			System.out.println("DISCOUNT !!!!!!!!!!" + (1 - Fare.DISCOUNT_FOR_REGULAR_CUSTOMER) * 100 + "%");
@@ -49,7 +49,7 @@ public class FareCalculatorService {
 		
 		System.out.println("duration : " + duration + " minutes" + " - soit en h : " + duration / 60);
 
-		double price = 0.0;
+		double price = 0.00;
 		switch (ticket.getParkingSpot().getParkingType()) {
 		case CAR: {
 			price = calculForVehiculeType("car", duration, ticket.isRegularCustomer());

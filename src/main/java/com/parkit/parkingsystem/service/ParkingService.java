@@ -9,7 +9,6 @@ import com.parkit.parkingsystem.util.InputReaderUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
 import java.util.Date;
 
 public class ParkingService {
@@ -34,8 +33,8 @@ public class ParkingService {
 			if (parkingSpot != null && parkingSpot.getId() > 0) {
 				String vehicleRegNumber = getVehichleRegNumber();
 				parkingSpot.setAvailable(false);
-				parkingSpotDAO.updateParking(parkingSpot);// allot this parking space and mark it's availability as
-															// false
+				parkingSpotDAO.updateParking(parkingSpot);// allot this parking space and mark it's availability as false
+															
 
 				Date inTime = new Date();
 				Ticket ticket = new Ticket();
