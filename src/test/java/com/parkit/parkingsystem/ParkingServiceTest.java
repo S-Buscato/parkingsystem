@@ -46,7 +46,6 @@ public class ParkingServiceTest {
 		when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
 		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
 		
-		
 		Ticket ticket = new Ticket();
 		ticket.setInTime(new Date(System.currentTimeMillis() - (60 * 60 * 1000)));
 		ticket.setParkingSpot(parkingSpot);
@@ -59,8 +58,8 @@ public class ParkingServiceTest {
 		parkingService.processExitingVehicle();
 		verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
 	}
-	
-	@Test
+	 
+	@Test 
 	public void processIncomingCarTest() throws Exception {
 		ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, true);
 		
@@ -90,4 +89,5 @@ public class ParkingServiceTest {
 		parkingService.processIncomingVehicle();
 		verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
 	}
+	
 }

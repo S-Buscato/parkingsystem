@@ -174,5 +174,13 @@ public class FareCalculatorServiceTest {
     	boolean isRegularCustomer = true;
     	assertEquals(85.5, fareCalculatorService.calculForVehiculeType(type, duration, isRegularCustomer));
     }
+    
+    @Test 
+    void calculateFareBikeWithDiscount() {
+    	String type = "bike";
+    	double duration= 3600;
+    	boolean isRegularCustomer = true;
+    	assertEquals(57, fareCalculatorService.calculForVehiculeType(type, duration, isRegularCustomer));
+    }
 
 }
