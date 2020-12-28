@@ -66,10 +66,11 @@ public class ParkingDataBaseIT {
 	public void testParkingLotExit() throws Exception {
 
 		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-		
+
 		parkingService.processIncomingVehicle();
-		// TODO: check that the fare generated and out time are populated correctly
-		// in the database
+		// TODO: check that the fare generated and out time are populated correctly in
+		// the database
+		Thread.sleep(1000);
 
 		parkingService.processExitingVehicle();
 		Ticket ticket = ticketDAO.getTicket("ABCDEF");
@@ -77,4 +78,81 @@ public class ParkingDataBaseIT {
 		assertTrue(ticket.getOutTime() != null);
 		assertEquals(0.0, ticket.getPrice());
 	}
+
+	@Test
+	public void TestParkingABike() throws Exception {
+		when(inputReaderUtil.readSelection()).thenReturn(2);
+		when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
+		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+		parkingService.processIncomingVehicle();
+
+		assertEquals(5, parkingSpotDAO.getNextAvailableSlot(ParkingType.BIKE));
+		assertEquals(4, ticketDAO.getTicket("ABCDEF").getParkingSpot().getId());
+	}
+
+	@Test
+	public void TestParkingExitABike() throws Exception {
+		when(inputReaderUtil.readSelection()).thenReturn(2);
+		when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
+
+		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+		parkingService.processIncomingVehicle();
+
+		Thread.sleep(1000);// wait 1 sec before the exiting
+
+		parkingService.processExitingVehicle();
+		Ticket ticket = ticketDAO.getTicket("ABCDEF");
+		assertTrue(ticket.getOutTime() != null);
+		assertEquals(0.0, ticket.getPrice());
+	}
+
+	@Test
+	public void TestParkingInAndOut2TimesToHaveADiscount() throws Exception {
+		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+
+		// first time
+		parkingService.processIncomingVehicle();
+
+		Thread.sleep(1000);// wait 1 sec before the exiting
+
+		parkingService.processExitingVehicle();
+
+		// second time
+		Thread.sleep(1000);// wait 1 sec before the exiting
+		parkingService.processIncomingVehicle();
+
+		Ticket ticketIn = ticketDAO.getTicket("ABCDEF");
+
+		assertTrue(ticketIn.isRegularCustomer());
+	}
+
+	@Test
+	public void TestParkingIn2TimesAndExitAll() throws Exception {
+		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+
+		parkingService.processIncomingVehicle();
+		Thread.sleep(500);// wait 1 sec before the exiting
+
+		parkingService.processIncomingVehicle();
+		Thread.sleep(500);// wait 1 sec before the exiting
+
+		parkingService.processExitingVehicle();
+		Thread.sleep(500);// wait 1 sec before the exiting
+		parkingService.processExitingVehicle();
+
+		Ticket ticket = ticketDAO.getTicket("ABCDEF");
+		assertTrue(ticket.getOutTime() != null);
+	}
+
+	@Test
+	public void TestParkingACarInAFullParking() throws Exception {
+		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+
+		parkingService.processIncomingVehicle();
+		parkingService.processIncomingVehicle();
+		parkingService.processIncomingVehicle();
+
+		assertEquals(0, parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR));
+	}
+
 }
